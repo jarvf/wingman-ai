@@ -1,18 +1,24 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
 export default function ResponseScreen() {
-  const { chatText } = useLocalSearchParams();
+  const { chatText, replies } = useLocalSearchParams();
+  const parsedReplies = replies ? JSON.parse(replies as string) : [];
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Generated Replies</Text>
       <Text style={styles.subtitle}>Input: {chatText}</Text>
 
-      {/* Placeholder for AI-generated responses */}
-      <Text style={styles.response}>👉 Your witty AI responses will go here.</Text>
-    </View>
+      {parsedReplies.length > 0 ? (
+        parsedReplies.map((reply: string, index: number) => (
+          <Text key={index} style={styles.response}>👉 {reply}</Text>
+        ))
+      ) : (
+        <Text style={styles.response}>No replies generated.</Text>
+      )}
+    </ScrollView>
   );
 }
 
@@ -20,8 +26,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 20,
-    justifyContent: 'center'
+    padding: 20
   },
   title: {
     fontSize: 28,
@@ -37,7 +42,7 @@ const styles = StyleSheet.create({
   response: {
     fontSize: 18,
     marginTop: 10,
-    textAlign: 'center',
+    textAlign: 'left',
     color: '#333'
   }
 });
